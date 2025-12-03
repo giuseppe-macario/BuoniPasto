@@ -35,11 +35,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --- Pulsante Elabora ---
         self.btn_elabora = QtWidgets.QPushButton("Elabora", self)
+        self.btn_elabora.setMinimumWidth(180)
+        self.btn_elabora.setMinimumHeight(40)
         self.btn_elabora.clicked.connect(self.esegui_elaborazione)
 
         buttons_layout = QtWidgets.QHBoxLayout()
         buttons_layout.addStretch(1)
         buttons_layout.addWidget(self.btn_elabora)
+        buttons_layout.addStretch(1)
         layout.addLayout(buttons_layout)
 
         # --- Area di testo per l'output ---
@@ -121,7 +124,6 @@ def main():
     window = MainWindow()
     window.show()
 
-    # ATTENZIONE: deve essere app.exec() con le parentesi
     sys.exit(app.exec())
 
 
