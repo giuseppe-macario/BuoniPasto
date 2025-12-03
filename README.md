@@ -117,9 +117,9 @@ Questo workflow:
 2. Clicca sul tab **Actions**
 3. Seleziona il workflow **Build desktop apps**
 4. Clicca **Run workflow**
-5. Attendere l'esecuzione dei task per qualche minuto
+5. Attendere l'esecuzione dei task per qualche minuto, finché compare la spunta verde ✅
 
-Alla fine compariranno tre artifact:
+Clicca sul nome del workflow accanto alla spunta verde. Compariranno tre artifact:
 
 - `BuoniPasto-windows`
 - `BuoniPasto-macos`
