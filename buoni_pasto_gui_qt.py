@@ -1,9 +1,7 @@
-# buoni_pasto_gui_qt.py
-
 import os
 import sys
 
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 from buoni_pasto_core import elabora_pdf
 
 
@@ -11,10 +9,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setWindowTitle("Buoni pasto - estrattore PDF (PyQt6)")
+        self.setWindowTitle("Buoni pasto - estrattore (PyQt6)")
         self.resize(800, 600)
 
-        # ----- widget centrali -----
         central_widget = QtWidgets.QWidget(self)
         self.setCentralWidget(central_widget)
 
@@ -52,7 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.text_output = QtWidgets.QPlainTextEdit(self)
         self.text_output.setReadOnly(True)
         font = self.text_output.font()
-        font.setFamily("Menlo")  # o un font monospazio simile
+        font.setFamily("Menlo")
         self.text_output.setFont(font)
         layout.addWidget(self.text_output, stretch=1)
 
@@ -63,7 +60,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def scegli_file(self):
         dialog = QtWidgets.QFileDialog(self, "Seleziona il PDF")
         dialog.setFileMode(QtWidgets.QFileDialog.FileMode.ExistingFile)
-        dialog.setNameFilter("File PDF (*.pdf);;Tutti i file (*.*)")
+        dialog.setNameFilter("File PDF (*.pdf)")
 
         if dialog.exec():
             selected_files = dialog.selectedFiles()
@@ -96,8 +93,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.text_output.appendPlainText("Elaborazione in corso...")
         self.status_bar.showMessage("Elaborazione in corso...")
 
-        # Per evitare blocchi pesanti si potrebbe usare un thread, ma
-        # per ora teniamo tutto sincrono (è veloce abbastanza nella maggior parte dei casi).
         QtWidgets.QApplication.processEvents()
 
         try:
@@ -120,17 +115,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-
-    # (opzionale) impostazioni di base
-    app.setApplicationName("Buoni pasto - estrattore PDF")
-    app.setOrganizationName("Giuseppe")  # o quello che vuoi
+    app.setApplicationName("Buoni pasto - estrattore")
+    app.setOrganizationName("Giuseppe")
 
     window = MainWindow()
     window.show()
 
+    # ATTENZIONE: deve essere app.exec() con le parentesi
     sys.exit(app.exec())
 
 
 if __name__ == "__main__":
     main()
-
