@@ -1,6 +1,6 @@
-# BuoniPasto — Applicazione Desktop (macOS / Windows / Linux)
+# BuoniPasto (macOS / Windows / Linux)
 
-Questa applicazione permette di elaborare statini SIGE in PDF per generare automaticamente una tabella riepilogativa dei buoni pasto.  
+Applicazione che processa statini SIGE in PDF per generare automaticamente una tabella riepilogativa dei buoni pasto.  
 Include:
 
 - **GUI PyQt6**
