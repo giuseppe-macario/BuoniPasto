@@ -138,3 +138,5 @@ Cliccando su ciascuno scarichi uno zip contenente:
 - **buoni_pasto_core.py** — contiene la logica di elaborazione (core)
 - **buoni_pasto_gui_qt.py** — GUI PyQt6
 - **.github/workflows/build-all.yml** — build multipiattaforma automatizzato
+
+Inoltre, `buoni_pasto_cli.py` esegue il programma da linea di comando senza GUI, e `buoni_pasto.py` è un file unico che esegue tutto da linea di comando senza chiamare `buoni_pasto_core.py` (quindi può essere usato da solo).
