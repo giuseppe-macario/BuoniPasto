@@ -79,7 +79,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.warning(
                 self,
                 "Attenzione",
-                "Seleziona prima un file PDF."
+                "File PDF non selezionato"
             )
             return
 
