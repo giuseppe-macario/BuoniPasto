@@ -162,7 +162,7 @@ def parse_line(line: str):
     causale = re.sub(r"\s{2,}", " ", causale_raw)
     causale = re.sub(r"^[^\wÀ-ÿ]+|[^\wÀ-ÿ]+$", "", causale).strip()
     if not causale or set(causale) <= {"-"," "}:
-        causale = "-"
+        causale = ""
 
     return data_str, ora_ing, ora_usc, causale
 
