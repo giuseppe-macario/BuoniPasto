@@ -63,21 +63,31 @@ def valida_pdf(path_pdf, min_righe_valide=5):
                 )
                 return False, report
 
-            testo_unito = "\n".join(righe)
-            chiavi = [
-                "Ora Ing", "Ora Usc", "Tipo/luogo Causale",
-                "Data Attività lavorativa"
-            ]
-            for k in chiavi:
-                presente = (k.lower() in testo_unito.lower())
-                report["etichette_presenti"][k] = presente
-
-            if not (report["etichette_presenti"].get("Ora Ing") and report["etichette_presenti"].get("Ora Usc")) \
-               and not report["etichette_presenti"].get("Tipo/luogo Causale"):
+            testo_unito = "\n".join(righe).lower()
+            
+            pres_ing = any(x in testo_unito for x in ["ora ing", "ora ing.", "ingresso"])
+            pres_usc = any(x in testo_unito for x in ["ora usc", "ora usc.", "uscita"])
+            
+            pres_causale = False
+            for r in righe:
+                lr = r.strip().lower()
+                if lr.startswith("tipo") or lr.startswith("lavoro straordinario"):
+                    pres_causale = True
+                    break
+            
+            report["etichette_presenti"] = {
+                "ingresso": pres_ing,
+                "uscita": pres_usc,
+                "causale": pres_causale,
+            }
+            
+            if not ((pres_ing and pres_usc) or pres_causale):
                 report["motivi_errore"].append(
-                    "Etichette chiave assenti (es. 'Ora Ing.', 'Ora Usc.', 'Tipo/luogo Causale')."
+                    "Etichette chiave non rilevate: "
+                    "attese varianti di 'Ingresso', 'Uscita', "
+                    "o un'etichetta che inizi con 'Tipo...' o 'Lavoro straordinario...'."
                 )
-
+            
             n_validi, esempi = _conta_righe_giorno(righe)
             report["righe_valide"] = n_validi
             report["esempi"] = esempi
