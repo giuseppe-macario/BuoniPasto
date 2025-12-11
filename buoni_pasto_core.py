@@ -184,15 +184,22 @@ def calcola_pasto(data_str: str, ora_usc: time) -> str | None:
     return None
 
 def print_table(rows):
+    """
+    Stampa la tabella su stdout:
+    - intestazione
+    - riga vuota
+    - righe dei risultati
+    Nessuna riga di trattini.
+    """
     headers = ["Data", "Entrata", "Uscita", "Pranzo/cena", "Nota"]
 
     if USE_TABS:
-        line = "\t".join(headers)
-        print(line)
-        print("-" * len(line))
+        header_line = "\t".join(headers)
+        print(header_line)
+        print()  # riga vuota tra intestazione e righe
         for r in rows:
             print("\t".join(r))
-        return "-" * len(line)
+        return
 
     # ---- stampa con spazi allineati ----
     if rows:
@@ -209,10 +216,9 @@ def print_table(rows):
         headers[3].ljust(widths[3]) + "  " +
         headers[4].ljust(widths[4])
     )
-    sep_line = "-" * len(header_line)
 
     print(header_line)
-    print(sep_line)
+    print()  # riga vuota tra intestazione e righe
 
     for r in rows:
         line = (
@@ -224,16 +230,15 @@ def print_table(rows):
         )
         print(line)
 
-    if not rows:
-        print("(nessuna riga)")
-
-    return sep_line
-
 def elabora_pdf(path_pdf: str) -> str:
     """
     Esegue tutte le validazioni e l'elaborazione del PDF
     e restituisce una stringa con l'output (tabella o errori).
     Non chiude il processo (niente sys.exit).
+
+    Comportamento:
+    - se ci sono buoni pasto: tabella con intestazione e riga vuota
+    - se non ci sono buoni pasto: 'Nessun buono pasto.'
     """
     buffer = io.StringIO()
     old_stdout = sys.stdout
@@ -293,11 +298,12 @@ def elabora_pdf(path_pdf: str) -> str:
                         tipo,
                         causale
                     ))
-        print()
-        sep = print_table(risultati)
-        print(sep)
-        print()
+
+        if not risultati:
+            print("Nessun buono pasto.")
+        else:
+            print_table(risultati)
+
         return buffer.getvalue()
     finally:
         sys.stdout = old_stdout
-
