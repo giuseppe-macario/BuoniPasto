@@ -104,7 +104,7 @@ def valida_pdf(path_pdf, min_righe_valide=5):
                 report["motivi_errore"].append(
                     "Etichette chiave non rilevate: "
                     "attese varianti di 'Ingresso', 'Uscita', "
-                    "o un'etichetta che inizi con 'Tipo...' o 'Lavoro straordinario...'."
+                    "o un'etichetta che inizi con 'Tipo…' o 'Lavoro straordinario…'."
                 )
             
             n_validi, esempi = _conta_righe_giorno(righe)
