@@ -299,10 +299,12 @@ def elabora_pdf(path_pdf: str) -> str:
                         causale
                     ))
 
+        print();
         if not risultati:
             print("Nessun buono pasto.")
         else:
             print_table(risultati)
+        print();
 
         return buffer.getvalue()
     finally:
