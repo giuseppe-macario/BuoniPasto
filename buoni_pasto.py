@@ -283,10 +283,12 @@ def main():
                     causale
                 ))
 
+    print();
     if not risultati:
         print("Nessun buono pasto.")
     else:
         print_table(risultati)
+    print();
 
 if __name__ == "__main__":
     main()
