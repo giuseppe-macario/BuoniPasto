@@ -81,22 +81,32 @@ def valida_pdf(path_pdf, min_righe_valide=5):
                     "Nessun testo estraibile (PDF potrebbe essere un'immagine scansionata)."
                 )
                 return False, report
-
-            testo_unito = "\n".join(righe)
-            chiavi = [
-                "Ora Ing", "Ora Usc", "Tipo/luogo Causale",
-                "Data Attività lavorativa"
-            ]
-            for k in chiavi:
-                presente = (k.lower() in testo_unito.lower())
-                report["etichette_presenti"][k] = presente
-
-            if not (report["etichette_presenti"].get("Ora Ing") and report["etichette_presenti"].get("Ora Usc")) \
-               and not report["etichette_presenti"].get("Tipo/luogo Causale"):
+            
+            testo_unito = "\n".join(righe).lower()
+            
+            pres_ing = any(x in testo_unito for x in ["ora ing", "ora ing.", "ingresso"])
+            pres_usc = any(x in testo_unito for x in ["ora usc", "ora usc.", "uscita"])
+            
+            pres_causale = False
+            for r in righe:
+                lr = r.strip().lower()
+                if lr.startswith("tipo") or lr.startswith("lavoro straordinario"):
+                    pres_causale = True
+                    break
+            
+            report["etichette_presenti"] = {
+                "ingresso": pres_ing,
+                "uscita": pres_usc,
+                "causale": pres_causale,
+            }
+            
+            if not ((pres_ing and pres_usc) or pres_causale):
                 report["motivi_errore"].append(
-                    "Etichette chiave assenti (es. 'Ora Ing.', 'Ora Usc.', 'Tipo/luogo Causale')."
+                    "Etichette chiave non rilevate: "
+                    "attese varianti di 'Ingresso', 'Uscita', "
+                    "o un'etichetta che inizi con 'Tipo...' o 'Lavoro straordinario...'."
                 )
-
+            
             n_validi, esempi = _conta_righe_giorno(righe)
             report["righe_valide"] = n_validi
             report["esempi"] = esempi
@@ -171,7 +181,7 @@ def parse_line(line: str):
     causale = re.sub(r"\s{2,}", " ", causale_raw)
     causale = re.sub(r"^[^\wÀ-ÿ]+|[^\wÀ-ÿ]+$", "", causale).strip()
     if not causale or set(causale) <= {"-"," "}:
-        causale = "-"
+        causale = ""
 
     return data_str, ora_ing, ora_usc, causale
 
@@ -196,19 +206,18 @@ def print_table(rows):
     headers = ["Data", "Entrata", "Uscita", "Pranzo/cena", "Nota"]
 
     if USE_TABS:
-        line = "\t".join(headers)
-        print(line)
-        print("-" * len(line))
+        header_line = "\t".join(headers)
+        print(header_line)
+        print()  # riga vuota tra intestazione e righe
         for r in rows:
             print("\t".join(r))
-        return "-" * len(line)
+        return
 
     # ---- stampa con spazi allineati ----
     if rows:
         cols = list(zip(*([headers] + rows)))
         widths = [max(len(x) for x in col) for col in cols]
     else:
-        # se non ci sono righe, usa la larghezza delle sole intestazioni
         widths = [len(h) for h in headers]
 
     header_line = (
@@ -218,10 +227,9 @@ def print_table(rows):
         headers[3].ljust(widths[3]) + "  " +
         headers[4].ljust(widths[4])
     )
-    sep_line = "-" * len(header_line)
 
     print(header_line)
-    print(sep_line)
+    print()  # riga vuota tra intestazione e righe
 
     for r in rows:
         line = (
@@ -232,11 +240,6 @@ def print_table(rows):
             r[4]
         )
         print(line)
-
-    if not rows:
-        print("(nessuna riga)")
-
-    return sep_line
 
 def main():
     # ------ VALIDAZIONE ------
@@ -279,10 +282,14 @@ def main():
                     tipo,
                     causale
                 ))
-    print()
-    sep = print_table(risultati)
-    print(sep) # sept è la riga di trattini
-    print()
+
+    # Se non ci sono risultati, messaggio semplice e basta
+    if not risultati:
+        print("Nessun buono pasto.")
+        return
+
+    # Altrimenti stampa la tabella
+    print_table(risultati)
 
 if __name__ == "__main__":
     main()
