@@ -283,13 +283,10 @@ def main():
                     causale
                 ))
 
-    # Se non ci sono risultati, messaggio semplice e basta
     if not risultati:
         print("Nessun buono pasto.")
-        return
-
-    # Altrimenti stampa la tabella
-    print_table(risultati)
+    else:
+        print_table(risultati)
 
 if __name__ == "__main__":
     main()
